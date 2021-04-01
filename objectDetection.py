@@ -5,7 +5,7 @@ execution_path = os.getcwd()
 
 detector = ObjectDetection()
 detector.setModelTypeAsRetinaNet()
-detector.setModelPath( os.path.join(execution_path , "resnet50_coco_best_v2.1.0.h5"))
+detector.setModelPath( os.path.join(execution_path , "resnet50_imagenet_tf.2.0"))
 detector.loadModel()
 detections = detector.detectObjectsFromImage(input_image=os.path.join(execution_path , "image.jpg"), output_image_path=os.path.join(execution_path , "imagenew.jpg"))
 
