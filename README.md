@@ -1,2 +1,2 @@
 # geoguessr-ml
-Machine Learning to guess where the image is from in geoguessr
+Tools to guess where you are from a screenshot from current round.
