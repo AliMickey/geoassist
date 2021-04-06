@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition 
 from kivy.properties import StringProperty
 from kivy.core.window import Window
-from PIL import ImageGrab
+from PIL import ImageTk, ImageGrab
 from shutil import copyfile
 from languageDetection import langDetection
 from objectDetection import objectDetection
@@ -18,6 +18,7 @@ Window.size = (1024, 600)
 class LanguageWindow(Screen):
     outputString = StringProperty('Output')
     filePath = StringProperty('')
+    screenName = "lang"
 
     def __init__(self, **kwargs):
         super(LanguageWindow, self).__init__(**kwargs)
@@ -26,18 +27,16 @@ class LanguageWindow(Screen):
 
     def _on_keyboard_down(self, window, keycode, num, text, modifiers):
         # Paste
-        if (keycode == 118 and "ctrl" in modifiers):
-            im = ImageGrab.grabclipboard()
-            im.save('assets/image.png', 'PNG')
-            print("yes")
-            im.show()
+        if (self.manager.current == "language" and "ctrl" in modifiers and keycode == 118):
+            self.im = ImageGrab.grabclipboard()
+            self.im.save("assets/image.png")
             self.updateImagePreview()
-        return True
 
     def _on_file_drop(self, window, file_path):
-        self.filePath = file_path.decode("utf-8")
-        copyfile(self.filePath, "assets/image.png")
-        self.updateImagePreview()
+        if (self.manager.current == "language"):
+            self.filePath = file_path.decode("utf-8")
+            copyfile(self.filePath, "assets/image.png")
+            self.updateImagePreview()
     
     def updateImagePreview(self):
         self.ids.imgLang.source = "assets/image.png"
@@ -64,14 +63,21 @@ class ObjectWindow(Screen):
         Window.bind(on_key_down=self._on_keyboard_down)
 
     def _on_keyboard_down(self, window, keycode, num, text, modifiers):
-        if (keycode == 118 and "ctrl" in modifiers):
-            print("yes")
-        return True
+        # Paste
+        if (self.manager.current == "object" and "ctrl" in modifiers and keycode == 118):
+            self.im = ImageGrab.grabclipboard()
+            self.im.save("assets/image.png")
+            self.updateImagePreview()
 
     def _on_file_drop(self, window, file_path):
-        self.filePath = file_path.decode("utf-8")
-        copyfile(self.filePath, "assets/image.png")
-        self.ids.imgObj.source = self.filePath
+        if (self.manager.current == "object"):
+            self.filePath = file_path.decode("utf-8")
+            copyfile(self.filePath, "assets/image.png")
+            self.updateImagePreview()
+            self.objectDetect()
+
+    def updateImagePreview(self):
+        self.ids.imgObj.source = "assets/image.png"
         self.ids.imgObj.reload()
 
     def objectDetect(self, bollard):
@@ -93,7 +99,7 @@ class GeoAssist(App):
         sm.add_widget(ObjectWindow(name='object'))
         sm.add_widget(CheatSheetWindow(name='cheatsheet'))
         sm.add_widget(AboutWindow(name='about'))
-
+       
         return sm
 
 if __name__ == '__main__':

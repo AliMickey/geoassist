@@ -1,5 +1,4 @@
 #:import threading threading
-#:import Clipboard kivy.core.clipboard.Clipboard
 <LanguageWindow>:
     GridLayout:
         cols:1
@@ -27,7 +26,6 @@
             Image:
                 id: imgLang
                 
-
         GridLayout:
             cols: 2
             row_default_height: 140
@@ -36,6 +34,8 @@
             GridLayout:
                 rows: 4
                 cols: 2
+                row_default_height:50
+                row_force_default:True
 
                 Label:
                     text: "Slavic"
@@ -73,7 +73,7 @@
 
             Button:
                 text: 'Language'
-                on_release:root.manager.current = 'language'
+                on_release: root.manager.current = 'language'
             Button:
                 text: 'Object'
                 background_normal: ''
@@ -92,8 +92,8 @@
 
         GridLayout:
             cols: 2
-            row_default_height: 140
-            row_force_default: True
+            row_default_height:200
+            row_force_default:True
 
             GridLayout:
                 rows: 2
@@ -137,17 +137,17 @@
                 text: 'About'
                 on_release: root.manager.current = 'about'
 
-        Label:
-            text: "Infos"
+    Label:
+        text: "Infos"
 
 <AboutWindow>:
     GridLayout:
         cols:1
 
         GridLayout:
-            cols:4
-            row_default_height:70
-            row_force_default:True
+            cols: 4
+            row_default_height: 70
+            row_force_default: True
 
             Button:
                 text: 'Language'
