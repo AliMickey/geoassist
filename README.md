@@ -1,2 +1,7 @@
-# geoguessr-ml
-Machine Learning to guess where the image is from in geoguessr
+# geoassist
+
+## Language Detection:
+- Region checks
+
+## Object Detection:
+- Bollard detection -> lookup against possible countries
