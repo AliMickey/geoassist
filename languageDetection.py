@@ -14,18 +14,18 @@ tessLangsSEA = ["ben","ind","khm","mal","slk","tha"]
 
 
 def langDetection(inputRegions):
-    matchedCountries = []
+    matchedCountries = ""
     selectedRegions = []
-    if "Slavic" in inputRegions:
+    if "slavic" in inputRegions:
         selectedRegions.extend(tessLangsSlavic)
-    if "Nordic/Baltic" in inputRegions:
+    if "nordicBaltic" in inputRegions:
         selectedRegions.extend(tessLangsNordicBaltic)
-    if "South Asian" in inputRegions:
+    if "SEA" in inputRegions:
         selectedRegions.extend(tessLangsSEA)
     for country in selectedRegions:
-        imgString = pytesseract.image_to_string(Image.open('image.png'), lang=country)
+        imgString = pytesseract.image_to_string(Image.open('assets/image.png'), lang=country)
         if not imgString.isspace():
-            matchedCountries.append(languages.get(part3=country).name)
+            matchedCountries += languages.get(part3=country).name + ", "
             print("Matched with " + country)
         else:
             print("No match for " + country)

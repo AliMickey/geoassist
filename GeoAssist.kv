@@ -1,129 +1,169 @@
+#:import threading threading
+#:import Clipboard kivy.core.clipboard.Clipboard
 <LanguageWindow>:
     GridLayout:
         cols:1
         GridLayout:
             cols:4
-            row_default_height:40
+            row_default_height:70
+            row_force_default:True
+
             Button:
                 text: 'Language'
                 background_normal: ''
                 background_color: 1, .3, .4, .85
-                on_press: root.manager.current = 'language'
+                on_release: root.manager.current = 'language'
             Button:
                 text: 'Object'
-                on_press:  root.manager.current = 'object'
+                on_release:  root.manager.current = 'object'
             Button:
                 text: 'Cheat Sheet'
-                on_press: root.manager.current = 'cheatsheet'
+                on_release: root.manager.current = 'cheatsheet'
             Button:
                 text: 'About'
-                on_press: root.manager.current = 'about'
+                on_release: root.manager.current = 'about'
 
-        Label:
-            text: "Image"
+        BoxLayout:
+            Image:
+                id: imgLang
+                
 
         GridLayout:
             cols: 2
-            Label:
-                text: "Options"
-            Button:
-                text: 'Submit'
-                on_press: root.manager.current = 'object'
+            row_default_height: 140
+            row_force_default: True
 
+            GridLayout:
+                rows: 4
+                cols: 2
+
+                Label:
+                    text: "Slavic"
+                CheckBox:
+                    id: chkSlavic
+                
+                Label:
+                    text: "Nordic/Baltic"
+                CheckBox:
+                    id: chkNordicBaltic
+                
+                Label:
+                    text: "South-East Asian"
+                CheckBox:
+                    id: chkSEA
+
+                Button:
+                    text: 'Submit'
+                    on_release: 
+                        threading.Thread(target=root.languageDetect, args=(chkSlavic.active, chkNordicBaltic.active, chkSEA.active)).start()
+
+            Label:
+                size: self.texture_size
+                text: root.outputString
+
+        
 <ObjectWindow>:
     GridLayout:
         cols:1
+
         GridLayout:
             cols:4
+            row_default_height:70
+            row_force_default:True
+
             Button:
                 text: 'Language'
-                on_press:root.manager.current = 'language'
+                on_release:root.manager.current = 'language'
             Button:
                 text: 'Object'
                 background_normal: ''
                 background_color: 1, .3, .4, .85
-                on_press: root.manager.current = 'object'
+                on_release: root.manager.current = 'object'
             Button:
                 text: 'Cheat Sheet'
-                on_press: root.manager.current = 'cheatsheet'
+                on_release: root.manager.current = 'cheatsheet'
             Button:
                 text: 'About'
-                on_press: root.manager.current = 'about'
+                on_release: root.manager.current = 'about'
 
-        Label:
-            text: "Image"
+        BoxLayout:
+            Image:
+                id: imgObj
 
         GridLayout:
             cols: 2
-            
+            row_default_height: 140
+            row_force_default: True
+
+            GridLayout:
+                rows: 2
+                cols: 2
+
+                Label:
+                    text: "Bollard"
+                CheckBox:
+                    id: chkBollard
+     
+                Button:
+                    text: 'Submit'
+                    on_release: 
+                        threading.Thread(target=root.objectDetect, args=(chkBollard.active)).start()
+
             Label:
-                text: "Options"
-            Button:
-                text: 'Submit'
-                on_press: root.manager.current = 'object'
+                size: self.texture_size
+                text: root.outputString
 
 <CheatSheetWindow>:
     GridLayout:
         cols:1
+
         GridLayout:
             cols:4
+            row_default_height:70
+            row_force_default:True
+
             Button:
                 text: 'Language'
-                
-                on_press: root.manager.current = 'language'
+                on_release: root.manager.current = 'language'
             Button:
                 text: 'Object'
-                
-                on_press: root.manager.current = 'object'
+                on_release: root.manager.current = 'object'
             Button:
                 text: 'Cheat Sheet'
                 background_normal: ''
                 background_color: 1, .3, .4, .85
-                on_press: root.manager.current = 'cheatsheet'
+                on_release: root.manager.current = 'cheatsheet'
             Button:
                 text: 'About'
-                on_press: root.manager.current = 'about'
+                on_release: root.manager.current = 'about'
 
         Label:
-            text: "Image"
-
-        GridLayout:
-            cols: 2
-            
-            Label:
-                text: "Options"
-            Button:
-                text: 'Submit'
-                on_press: root.manager.current = 'object'
+            text: "Infos"
 
 <AboutWindow>:
     GridLayout:
         cols:1
+
         GridLayout:
             cols:4
+            row_default_height:70
+            row_force_default:True
+
             Button:
                 text: 'Language'
-                on_press: root.manager.current = 'language'
+                on_release: root.manager.current = 'language'
             Button:
                 text: 'Object'
-                on_press: root.manager.current = 'object'
+                on_release: root.manager.current = 'object'
             Button:
                 text: 'Cheat Sheet'
-                on_press: root.manager.current = 'cheatsheet'
+                on_release: root.manager.current = 'cheatsheet'
             Button:
                 text: 'About'
                 background_normal: ''
                 background_color: 1, .3, .4, .85
-                on_press: root.manager.current = 'about'
+                on_release: root.manager.current = 'about'
 
-        Label:
-            text: "Image"
-
-        GridLayout:
-            cols: 2
-            
-            Label:
-                text: "Options"
-            Button:
-                text: 'Submit'
-                on_press: root.manager.current = 'object'
+    Label:
+        markup: True
+        text: "[size=15]Guarantee your victory royale!\nSource Code: github.com/AliMickey/geoassist\n\n\n[size=25][b]Language Regions:[/b][/size]\n[u]Slavic:[/u] Bulgaria, Croatia, Hungary, Macedonia, Poland, Russia, Ukraine\n[u]Nordic/Baltic:[/u] Estonia, Finland, Iceland, Latvia, Lithuania, Norway, Sweden\n[u]South-East Asia:[/u] Bangladesh, India, Cambodia, Malaysia, Sri Lanka, Thailand[size=15]" 
