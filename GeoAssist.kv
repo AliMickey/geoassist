@@ -1,0 +1,129 @@
+<LanguageWindow>:
+    GridLayout:
+        cols:1
+        GridLayout:
+            cols:4
+            row_default_height:40
+            Button:
+                text: 'Language'
+                background_normal: ''
+                background_color: 1, .3, .4, .85
+                on_press: root.manager.current = 'language'
+            Button:
+                text: 'Object'
+                on_press:  root.manager.current = 'object'
+            Button:
+                text: 'Cheat Sheet'
+                on_press: root.manager.current = 'cheatsheet'
+            Button:
+                text: 'About'
+                on_press: root.manager.current = 'about'
+
+        Label:
+            text: "Image"
+
+        GridLayout:
+            cols: 2
+            Label:
+                text: "Options"
+            Button:
+                text: 'Submit'
+                on_press: root.manager.current = 'object'
+
+<ObjectWindow>:
+    GridLayout:
+        cols:1
+        GridLayout:
+            cols:4
+            Button:
+                text: 'Language'
+                on_press:root.manager.current = 'language'
+            Button:
+                text: 'Object'
+                background_normal: ''
+                background_color: 1, .3, .4, .85
+                on_press: root.manager.current = 'object'
+            Button:
+                text: 'Cheat Sheet'
+                on_press: root.manager.current = 'cheatsheet'
+            Button:
+                text: 'About'
+                on_press: root.manager.current = 'about'
+
+        Label:
+            text: "Image"
+
+        GridLayout:
+            cols: 2
+            
+            Label:
+                text: "Options"
+            Button:
+                text: 'Submit'
+                on_press: root.manager.current = 'object'
+
+<CheatSheetWindow>:
+    GridLayout:
+        cols:1
+        GridLayout:
+            cols:4
+            Button:
+                text: 'Language'
+                
+                on_press: root.manager.current = 'language'
+            Button:
+                text: 'Object'
+                
+                on_press: root.manager.current = 'object'
+            Button:
+                text: 'Cheat Sheet'
+                background_normal: ''
+                background_color: 1, .3, .4, .85
+                on_press: root.manager.current = 'cheatsheet'
+            Button:
+                text: 'About'
+                on_press: root.manager.current = 'about'
+
+        Label:
+            text: "Image"
+
+        GridLayout:
+            cols: 2
+            
+            Label:
+                text: "Options"
+            Button:
+                text: 'Submit'
+                on_press: root.manager.current = 'object'
+
+<AboutWindow>:
+    GridLayout:
+        cols:1
+        GridLayout:
+            cols:4
+            Button:
+                text: 'Language'
+                on_press: root.manager.current = 'language'
+            Button:
+                text: 'Object'
+                on_press: root.manager.current = 'object'
+            Button:
+                text: 'Cheat Sheet'
+                on_press: root.manager.current = 'cheatsheet'
+            Button:
+                text: 'About'
+                background_normal: ''
+                background_color: 1, .3, .4, .85
+                on_press: root.manager.current = 'about'
+
+        Label:
+            text: "Image"
+
+        GridLayout:
+            cols: 2
+            
+            Label:
+                text: "Options"
+            Button:
+                text: 'Submit'
+                on_press: root.manager.current = 'object'
