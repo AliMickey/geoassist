@@ -13,14 +13,14 @@ tessLangsNordicBaltic = ["est","fin","isl","lat","lit","nor","swe"]
 tessLangsSEA = ["ben","ind","khm","mal","slk","tha"]
 
 
-def langDetection(inputRegions):
+def langDetection(slavic, nordicBaltic, sea):
     matchedCountries = ""
     selectedRegions = []
-    if "slavic" in inputRegions:
+    if slavic:
         selectedRegions.extend(tessLangsSlavic)
-    if "nordicBaltic" in inputRegions:
+    if nordicBaltic:
         selectedRegions.extend(tessLangsNordicBaltic)
-    if "SEA" in inputRegions:
+    if sea:
         selectedRegions.extend(tessLangsSEA)
     for country in selectedRegions:
         imgString = pytesseract.image_to_string(Image.open('assets/image.png'), lang=country)

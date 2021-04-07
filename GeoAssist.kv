@@ -1,5 +1,9 @@
 #:import threading threading
 <LanguageWindow>:
+    slavic: chkSlavic
+    nordicBaltic: chkNordicBaltic
+    sea: chkSEA
+
     GridLayout:
         cols:1
         GridLayout:
@@ -55,7 +59,7 @@
                 Button:
                     text: 'Submit'
                     on_release: 
-                        threading.Thread(target=root.languageDetect, args=(chkSlavic.active, chkNordicBaltic.active, chkSEA.active)).start()
+                        threading.Thread(target=root.languageDetect).start()
 
             Label:
                 size: self.texture_size
@@ -63,6 +67,7 @@
 
         
 <ObjectWindow>:
+    bollard: chkBollard
     GridLayout:
         cols:1
 

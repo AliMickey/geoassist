@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition 
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
 from PIL import ImageTk, ImageGrab
 from shutil import copyfile
@@ -18,7 +18,9 @@ Window.size = (1024, 600)
 class LanguageWindow(Screen):
     outputString = StringProperty('Output')
     filePath = StringProperty('')
-    screenName = "lang"
+    slavic = ObjectProperty(None)
+    nordicBaltic = ObjectProperty(None)
+    sea = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(LanguageWindow, self).__init__(**kwargs)
@@ -42,20 +44,15 @@ class LanguageWindow(Screen):
         self.ids.imgLang.source = "assets/image.png"
         self.ids.imgLang.reload()
 
-    def languageDetect(self, slavic, nordicBaltic, SEA):
-        selectedRegions = []
-        if slavic:
-            selectedRegions.append('slavic')
-        if nordicBaltic:
-            selectedRegions.append('nordicBaltic')
-        if SEA:
-            selectedRegions.append('SEA')
-        self.outputString = langDetection(selectedRegions)
+    def languageDetect(self):
+        self.outputString = langDetection(self.slavic.active, self.nordicBaltic.active, self.sea.active)
+        
     pass
 
 class ObjectWindow(Screen):
     outputString = StringProperty('Output')
     filePath = StringProperty('')
+    bollard = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(ObjectWindow, self).__init__(**kwargs)
@@ -74,14 +71,13 @@ class ObjectWindow(Screen):
             self.filePath = file_path.decode("utf-8")
             copyfile(self.filePath, "assets/image.png")
             self.updateImagePreview()
-            self.objectDetect()
 
     def updateImagePreview(self):
         self.ids.imgObj.source = "assets/image.png"
         self.ids.imgObj.reload()
 
-    def objectDetect(self, bollard):
-        if bollard:
+    def objectDetect(self):
+        if self.bollard.active:
             objectDetection()
 
     pass
