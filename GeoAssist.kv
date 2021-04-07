@@ -20,15 +20,13 @@
                 text: 'Object'
                 on_release:  root.manager.current = 'object'
             Button:
-                text: 'Cheat Sheet'
-                on_release: root.manager.current = 'cheatsheet'
-            Button:
                 text: 'About'
                 on_release: root.manager.current = 'about'
 
         BoxLayout:
+            orientation: 'vertical'
             Image:
-                id: imgLang
+                id: imgLang            
                 
         GridLayout:
             cols: 2
@@ -69,12 +67,12 @@
 <ObjectWindow>:
     bollard: chkBollard
     GridLayout:
-        cols:1
+        cols: 1
 
         GridLayout:
-            cols:4
-            row_default_height:70
-            row_force_default:True
+            cols: 4
+            row_default_height: 70
+            row_force_default: True
 
             Button:
                 text: 'Language'
@@ -84,9 +82,6 @@
                 background_normal: ''
                 background_color: 1, .3, .4, .85
                 on_release: root.manager.current = 'object'
-            Button:
-                text: 'Cheat Sheet'
-                on_release: root.manager.current = 'cheatsheet'
             Button:
                 text: 'About'
                 on_release: root.manager.current = 'about'
@@ -118,32 +113,6 @@
                 size: self.texture_size
                 text: root.outputString
 
-<CheatSheetWindow>:
-    GridLayout:
-        cols:1
-
-        GridLayout:
-            cols:4
-            row_default_height:70
-            row_force_default:True
-
-            Button:
-                text: 'Language'
-                on_release: root.manager.current = 'language'
-            Button:
-                text: 'Object'
-                on_release: root.manager.current = 'object'
-            Button:
-                text: 'Cheat Sheet'
-                background_normal: ''
-                background_color: 1, .3, .4, .85
-                on_release: root.manager.current = 'cheatsheet'
-            Button:
-                text: 'About'
-                on_release: root.manager.current = 'about'
-
-    Label:
-        text: "Infos"
 
 <AboutWindow>:
     GridLayout:
@@ -161,14 +130,11 @@
                 text: 'Object'
                 on_release: root.manager.current = 'object'
             Button:
-                text: 'Cheat Sheet'
-                on_release: root.manager.current = 'cheatsheet'
-            Button:
                 text: 'About'
                 background_normal: ''
                 background_color: 1, .3, .4, .85
                 on_release: root.manager.current = 'about'
 
-    Label:
-        markup: True
-        text: "[size=15]Guarantee your victory royale!\nSource Code: github.com/AliMickey/geoassist\n\n\n[size=25][b]Language Regions:[/b][/size]\n[u]Slavic:[/u] Bulgaria, Croatia, Hungary, Macedonia, Poland, Russia, Ukraine\n[u]Nordic/Baltic:[/u] Estonia, Finland, Iceland, Latvia, Lithuania, Norway, Sweden\n[u]South-East Asia:[/u] Bangladesh, India, Cambodia, Malaysia, Sri Lanka, Thailand[size=15]" 
+    #Label:
+       # markup: True
+       # text: "[size=15]Guarantee your victory royale!\nSource Code: github.com/AliMickey/geoassist\n\n\n[size=25][b]Language Regions:[/b][/size]\n[u]Slavic:[/u] Bulgaria, Croatia, Hungary, Macedonia, Poland, Russia, Ukraine\n[u]Nordic/Baltic:[/u] Estonia, Finland, Iceland, Latvia, Lithuania, Norway, Sweden\n[u]South-East Asia:[/u] Bangladesh, India, Cambodia, Malaysia, Sri Lanka, Thailand[size=15]" 

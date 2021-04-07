@@ -3,12 +3,10 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition 
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
-from PIL import ImageTk, ImageGrab
+from PIL import ImageGrab, Image
 from shutil import copyfile
 from languageDetection import langDetection
 from objectDetection import objectDetection
-
-
 
 kv = Builder.load_file("GeoAssist.kv")
 #Window.clearcolor = (0.5, 0.5, 0.5, 1) #Window color
@@ -16,24 +14,36 @@ Window.size = (1024, 600)
 
 
 class LanguageWindow(Screen):
-    outputString = StringProperty('Output')
+    outputString = StringProperty('')
     filePath = StringProperty('')
-    slavic = ObjectProperty(None)
-    nordicBaltic = ObjectProperty(None)
-    sea = ObjectProperty(None)
+    slavic = ObjectProperty(False)
+    nordicBaltic = ObjectProperty(False)
+    sea = ObjectProperty(False)
+    oldDegree = 0
 
     def __init__(self, **kwargs):
         super(LanguageWindow, self).__init__(**kwargs)
         Window.bind(on_dropfile=self._on_file_drop)
         Window.bind(on_key_down=self._on_keyboard_down)
+        Window.bind(on_motion=self._on_mouse_input)
 
     def _on_keyboard_down(self, window, keycode, num, text, modifiers):
         # Paste
         if (self.manager.current == "language" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
             self.im.save("assets/image.png")
-            self.updateImagePreview()
+            self.updateImagePreview()            
 
+    def _on_mouse_input(self, hit, type, motionevent):
+        degree = 0
+        if (self.manager.current == "language"):
+            if (motionevent.button == "scrolldown"):
+                degree = 2
+            elif (motionevent.button == "scrollup"):
+                degree = -2
+            Image.open("assets/image.png").rotate(degree).save("assets/image.png")
+            self.updateImagePreview()
+    
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "language"):
             self.filePath = file_path.decode("utf-8")
@@ -50,20 +60,31 @@ class LanguageWindow(Screen):
     pass
 
 class ObjectWindow(Screen):
-    outputString = StringProperty('Output')
+    outputString = StringProperty('')
     filePath = StringProperty('')
-    bollard = ObjectProperty(None)
+    bollard = ObjectProperty(False)
 
     def __init__(self, **kwargs):
         super(ObjectWindow, self).__init__(**kwargs)
         Window.bind(on_dropfile=self._on_file_drop)
         Window.bind(on_key_down=self._on_keyboard_down)
+        Window.bind(on_motion=self._on_mouse_input)
 
     def _on_keyboard_down(self, window, keycode, num, text, modifiers):
         # Paste
         if (self.manager.current == "object" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
             self.im.save("assets/image.png")
+            self.updateImagePreview()
+
+    def _on_mouse_input(self, hit, type, motionevent):
+        degree = 0
+        if (self.manager.current == "object"):
+            if (motionevent.button == "scrolldown"):
+                degree = 2
+            elif (motionevent.button == "scrollup"):
+                degree = -2
+            Image.open("assets/image.png").rotate(degree).save("assets/image.png")
             self.updateImagePreview()
 
     def _on_file_drop(self, window, file_path):
@@ -82,8 +103,8 @@ class ObjectWindow(Screen):
 
     pass
 
-class CheatSheetWindow(Screen):
-    pass
+# class CheatSheetWindow(Screen):
+#     pass
 
 class AboutWindow(Screen):
     pass
@@ -93,7 +114,7 @@ class GeoAssist(App):
         sm = ScreenManager(transition=SwapTransition())
         sm.add_widget(LanguageWindow(name='language'))
         sm.add_widget(ObjectWindow(name='object'))
-        sm.add_widget(CheatSheetWindow(name='cheatsheet'))
+        #sm.add_widget(CheatSheetWindow(name='cheatsheet'))
         sm.add_widget(AboutWindow(name='about'))
        
         return sm
