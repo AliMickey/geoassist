@@ -3,16 +3,24 @@ Config.set('graphics', 'resizable', False)
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition 
-from kivy.properties import StringProperty, ObjectProperty, NumericProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
 from PIL import ImageGrab, Image
 from shutil import copyfile
+import sys
+import os
 from languageDetection import langDetection
 from objectDetection import objectDetection
 
-kv = Builder.load_file("GeoAssist.kv")
 #Window.clearcolor = (0.5, 0.5, 0.5, 1) #Window color
 Window.size = (1024, 470)
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+kv = Builder.load_file(resource_path("resources/GeoAssist.kv"))
 
 
 class LanguageWindow(Screen):
@@ -34,7 +42,7 @@ class LanguageWindow(Screen):
         # Paste
         if (self.manager.current == "language" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
-            self.im.save("assets/image.png")
+            self.im.save(resource_path("resources/image.png"))
             self.imageActive = True
             self.updateImagePreview()            
 
@@ -45,19 +53,19 @@ class LanguageWindow(Screen):
                 degree = 2
             elif (self.totalDegree > -10 and motionevent.button == "scrollup"):
                 degree = -2
-            Image.open("assets/image.png").rotate(degree).save("assets/image.png")
+            Image.open(resource_path("resources/image.png")).rotate(degree).save(resource_path("resources/image.png"))
             self.totalDegree += degree
             self.updateImagePreview()
     
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "language"):
             self.filePath = file_path.decode("utf-8")
-            copyfile(self.filePath, "assets/image.png")
+            copyfile(self.filePath, resource_path("resources/image.png"))
             self.imageActive == True
             self.updateImagePreview()
     
     def updateImagePreview(self):
-        self.ids.imgLang.source = "assets/image.png"
+        self.ids.imgLang.source = resource_path("resources/image.png")
         self.ids.imgLang.reload()
 
     def languageDetect(self):
@@ -82,8 +90,8 @@ class ObjectWindow(Screen):
         # Paste
         if (self.manager.current == "object" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
-            self.im.save("assets/image.png")
-            self.imageActive = True
+            self.im.save(resource_path("resources/image.png"))
+            self.imageActive = True 
             self.updateImagePreview()
 
     def _on_mouse_input(self, hit, type, motionevent):
@@ -93,18 +101,18 @@ class ObjectWindow(Screen):
                 degree = 2
             elif (motionevent.button == "scrollup"):
                 degree = -2
-            Image.open("assets/image.png").rotate(degree).save("assets/image.png")
+            Image.open(resource_path("resources/image.png")).rotate(degree).save(resource_path("resources/image.png"))
             self.updateImagePreview()
 
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "object"):
             self.filePath = file_path.decode("utf-8")
-            copyfile(self.filePath, "assets/image.png")
+            copyfile(self.filePath, resource_path("resources/image.png"))
             self.imageActive = True
             self.updateImagePreview()
 
     def updateImagePreview(self):
-        self.ids.imgObj.source = "assets/image.png"
+        self.ids.imgObj.source = resource_path("resources/image.png")
         self.ids.imgObj.reload()
 
     def objectDetect(self):
@@ -134,3 +142,6 @@ class GeoAssist(App):
 
 if __name__ == '__main__':
     GeoAssist().run()
+
+#.exe Maker
+#pyinstaller --noconfirm --onefile --console --icon "D:/Programming/Git/geoguessr-ml/resources/icon.ico" --name "GeoAssist" --add-data "D:/Programming/Git/geoguessr-ml/resources;resources/" --add-data "D:/Programming/Git/geoguessr-ml/libpng16-16.dll;." --add-data "D:/Programming/Git/geoguessr-ml/languageDetection.py;." --add-data "D:/Programming/Git/geoguessr-ml/objectDetection.py;."  "D:/Programming/Git/geoguessr-ml/main.py"
