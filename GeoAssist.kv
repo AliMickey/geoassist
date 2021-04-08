@@ -5,11 +5,11 @@
     sea: chkSEA
 
     GridLayout:
-        cols:1
-        GridLayout:
-            cols:4
-            row_default_height:70
-            row_force_default:True
+        cols: 1
+        BoxLayout:
+            size: (1024,70)
+            size_hint: (None, None)
+            spacing: 5
 
             Button:
                 text: 'Language'
@@ -24,9 +24,8 @@
                 on_release: root.manager.current = 'about'
 
         BoxLayout:
-            orientation: 'vertical'
             Image:
-                id: imgLang            
+                id: imgLang
                 
         GridLayout:
             cols: 2
@@ -69,10 +68,10 @@
     GridLayout:
         cols: 1
 
-        GridLayout:
-            cols: 4
-            row_default_height: 70
-            row_force_default: True
+        BoxLayout:
+            size: (1024,70)
+            size_hint: (None, None)
+            spacing: 5
 
             Button:
                 text: 'Language'
@@ -119,7 +118,7 @@
         cols:1
 
         GridLayout:
-            cols: 4
+            cols: 3
             row_default_height: 70
             row_force_default: True
 

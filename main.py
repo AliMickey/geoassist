@@ -1,7 +1,9 @@
+from kivy.config import Config
+Config.set('graphics', 'resizable', False)
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition 
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, NumericProperty
 from kivy.core.window import Window
 from PIL import ImageGrab, Image
 from shutil import copyfile
@@ -10,7 +12,7 @@ from objectDetection import objectDetection
 
 kv = Builder.load_file("GeoAssist.kv")
 #Window.clearcolor = (0.5, 0.5, 0.5, 1) #Window color
-Window.size = (1024, 600)
+Window.size = (1024, 470)
 
 
 class LanguageWindow(Screen):
@@ -19,7 +21,8 @@ class LanguageWindow(Screen):
     slavic = ObjectProperty(False)
     nordicBaltic = ObjectProperty(False)
     sea = ObjectProperty(False)
-    oldDegree = 0
+    imageActive = False
+    totalDegree = 0
 
     def __init__(self, **kwargs):
         super(LanguageWindow, self).__init__(**kwargs)
@@ -32,22 +35,25 @@ class LanguageWindow(Screen):
         if (self.manager.current == "language" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
             self.im.save("assets/image.png")
+            self.imageActive = True
             self.updateImagePreview()            
 
     def _on_mouse_input(self, hit, type, motionevent):
         degree = 0
-        if (self.manager.current == "language"):
-            if (motionevent.button == "scrolldown"):
+        if (self.imageActive == True and self.manager.current == "language"):
+            if (self.totalDegree < 10 and motionevent.button == "scrolldown"):
                 degree = 2
-            elif (motionevent.button == "scrollup"):
+            elif (self.totalDegree > -10 and motionevent.button == "scrollup"):
                 degree = -2
             Image.open("assets/image.png").rotate(degree).save("assets/image.png")
+            self.totalDegree += degree
             self.updateImagePreview()
     
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "language"):
             self.filePath = file_path.decode("utf-8")
             copyfile(self.filePath, "assets/image.png")
+            self.imageActive == True
             self.updateImagePreview()
     
     def updateImagePreview(self):
@@ -59,10 +65,12 @@ class LanguageWindow(Screen):
         
     pass
 
+
 class ObjectWindow(Screen):
     outputString = StringProperty('')
     filePath = StringProperty('')
     bollard = ObjectProperty(False)
+    imageActive = False
 
     def __init__(self, **kwargs):
         super(ObjectWindow, self).__init__(**kwargs)
@@ -75,11 +83,12 @@ class ObjectWindow(Screen):
         if (self.manager.current == "object" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
             self.im.save("assets/image.png")
+            self.imageActive = True
             self.updateImagePreview()
 
     def _on_mouse_input(self, hit, type, motionevent):
         degree = 0
-        if (self.manager.current == "object"):
+        if (self.imageActive == True and self.manager.current == "object"):
             if (motionevent.button == "scrolldown"):
                 degree = 2
             elif (motionevent.button == "scrollup"):
@@ -91,6 +100,7 @@ class ObjectWindow(Screen):
         if (self.manager.current == "object"):
             self.filePath = file_path.decode("utf-8")
             copyfile(self.filePath, "assets/image.png")
+            self.imageActive = True
             self.updateImagePreview()
 
     def updateImagePreview(self):
@@ -103,11 +113,14 @@ class ObjectWindow(Screen):
 
     pass
 
+
 # class CheatSheetWindow(Screen):
 #     pass
 
+
 class AboutWindow(Screen):
     pass
+
 
 class GeoAssist(App):
     def build(self):
