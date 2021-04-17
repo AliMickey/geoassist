@@ -41,7 +41,7 @@ def langDetection(slavic, nordicBaltic, sea):
 
     for langCode, country in selectedRegions.items():
         imgString = pytesseract.image_to_string(resource_path("resources/image.png"), lang=langCode) #Try Normal Image
-        
+        print(imgString)
         if imgString.isspace(): #If no match try filtered image
             imgString = pytesseract.image_to_string(resource_path("resources/imageFilter.png"), lang=langCode) 
             if not imgString.isspace(): #If matched using filtered image

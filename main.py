@@ -116,8 +116,7 @@ class ObjectWindow(Screen):
         self.ids.imgObj.reload()
 
     def objectDetect(self):
-        if self.bollard.active:
-            objectDetection()
+        self.outputString = objectDetection(self.bollard.active)
 
     pass
 

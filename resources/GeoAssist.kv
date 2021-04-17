@@ -106,7 +106,7 @@
                 Button:
                     text: 'Submit'
                     on_release: 
-                        threading.Thread(target=root.objectDetect, args=(chkBollard.active)).start()
+                        threading.Thread(target=root.objectDetect).start()
 
             Label:
                 size: self.texture_size
