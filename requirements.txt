@@ -1,3 +1,5 @@
-PIL
-pytesseract
+google-cloud-vision
+googletrans==4.0.0rc1
 iso-639
+kivy[base]
+pandas

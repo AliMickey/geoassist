@@ -1,9 +1,5 @@
 #:import threading threading
 <LanguageWindow>:
-    slavic: chkSlavic
-    nordicBaltic: chkNordicBaltic
-    sea: chkSEA
-
     GridLayout:
         cols: 1
         BoxLayout:
@@ -24,44 +20,26 @@
                 on_release: root.manager.current = 'about'
 
         BoxLayout:
+            orientation: 'vertical'
             Image:
                 id: imgLang
+                size_hint: (1, .6)
+
+            Button:
+                text: 'Submit'
+                on_release: 
+                    threading.Thread(target=root.languageDetect).start()
+                    outputLabel = ""
+                size_hint: (.2, .2)
+                pos_hint: {'right': .6}
+
+        Label:
+            id: outputLabel
+            size: self.texture_size
+            text: root.outputString
+            size_hint: (2, .1)
+            pos_hint: {'left': 1}
                 
-        GridLayout:
-            cols: 2
-            row_default_height: 140
-            row_force_default: True
-
-            GridLayout:
-                rows: 4
-                cols: 2
-                row_default_height:50
-                row_force_default:True
-
-                Label:
-                    text: "Slavic"
-                CheckBox:
-                    id: chkSlavic
-                
-                Label:
-                    text: "Nordic/Baltic"
-                CheckBox:
-                    id: chkNordicBaltic
-                
-                Label:
-                    text: "South-East Asian"
-                CheckBox:
-                    id: chkSEA
-
-                Button:
-                    text: 'Submit'
-                    on_release: 
-                        threading.Thread(target=root.languageDetect).start()
-
-            Label:
-                size: self.texture_size
-                text: root.outputString
-
         
 <ObjectWindow>:
     bollard: chkBollard
@@ -91,7 +69,7 @@
 
         GridLayout:
             cols: 2
-            row_default_height:200
+            row_default_height:120
             row_force_default:True
 
             GridLayout:
@@ -136,4 +114,4 @@
 
     Label:
         markup: True
-        text: "[size=15]Guarantee your victory royale!\nSource Code: github.com/AliMickey/geoassist\n\n\n[size=25][b]Language Regions:[/b][/size]\n[u]Slavic:[/u] Bulgaria, Croatia, Hungary, Macedonia, Poland, Russia, Ukraine\n[u]Nordic/Baltic:[/u] Estonia, Finland, Iceland, Latvia, Lithuania, Norway, Sweden\n[u]South-East Asia:[/u] Bangladesh, India, Cambodia, Malaysia, Sri Lanka, Thailand[size=15]" 
+        text: "[size=15]Guarantee your victory royale!\nSource Code: github.com/AliMickey/geoassist[size=25]" 

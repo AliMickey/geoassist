@@ -1,61 +1,230 @@
-import pytesseract
-import cv2
-import numpy as np
-import sys
-import os
-
-#Bulgaria, Croatia, Hungary, Macedonia, Poland, Russia, Ukraine 
-tessLangsSlavic = {"bul":"bulgaria", "hrv":"croatia", "hun":"hungary", "mkd":"North Macedonia", "pol":"Poland", "rus":"Russia", "ukr":"Ukraine"}
-#Estonia, Finland, Iceland, Latvia, Lithuania, Norway, Sweden
-tessLangsNordicBaltic = {"est": "Estonia", "fin":"Finland", "isl":"Iceland", "lav":"Latvia", "lit":"Lithuania", "nor":"Norway", "swe":"Sweden"}
-#Bangladesh, Hindi, Indonesia, Cambodia, Malaysia, Sri Lanka, Thailand
-tessLangsSEA = {"ben":"Bangladesh", "hin":"India", "ind":"Indonesia", "khm":"Cambodia", "mal":"Malaysia", "sin":"Sri Lanka", "tha":"Thailand"}
+import os, io, sys
+import pandas as pd
+from google.cloud import vision
+from googletrans import Translator
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-pytesseract.pytesseract.tesseract_cmd = resource_path('resources/Tesseract-OCR/tesseract.exe')
 
-def langDetection(slavic, nordicBaltic, sea):
-    matchedCountries = ""
-    selectedRegions = {}
-    if slavic:
-        selectedRegions.update(tessLangsSlavic)
-    if nordicBaltic:
-       selectedRegions.update(tessLangsNordicBaltic)
-    if sea:
-        selectedRegions.update(tessLangsSEA)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = resource_path("resources/ServiceAccountToken.json")
 
-    #Pre-processing
-    #Black and White
-    img = cv2.medianBlur(cv2.cvtColor(cv2.imread(resource_path("resources/image.png")), cv2.COLOR_BGR2GRAY), 5)
-    #Blur
-    #img = cv2.medianBlur(img,5)
-    cv2.imwrite(resource_path("resources/image.png"), img)
+client = vision.ImageAnnotatorClient()
+translator = Translator()
 
-    #Threshold Filter
-    img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    cv2.imwrite(resource_path("resources/imageFilter.png"), img)
+def langDetection():
+    country = "None"
+    with io.open(resource_path("resources/image.png"), 'rb') as image_file:
+        content = image_file.read()
 
-    for langCode, country in selectedRegions.items():
-        imgString = pytesseract.image_to_string(resource_path("resources/image.png"), lang=langCode) #Try Normal Image
-        print(imgString)
-        if imgString.isspace(): #If no match try filtered image
-            imgString = pytesseract.image_to_string(resource_path("resources/imageFilter.png"), lang=langCode) 
-            if not imgString.isspace(): #If matched using filtered image
-                matchedCountries += country + ", "
-                print("Matched with " + langCode + " using filtered image")
-        else: #If matched using normal image
-            matchedCountries += country + ", "
-            print("Matched with " + langCode + " using original image")
+    image = vision.Image(content=content)
 
-        ## Test confidence filters
-        #for country in selectedRegions:
-        #imgString = pytesseract.image_to_string(Image.open('assets/image.png'), lang=country, config=conf)
-        #imgData = pytesseract.image_to_data(Image.open('assets/image.png'), lang=country, output_type='data.frame')
-        #imgData = imgData[imgData.conf != -1] # Remove any non-matches
-        #confidence = imgData.groupby(['block_num'])['conf'].mean()
-        #conf = imgData.groupby(['conf']).mean(
-    return matchedCountries
+    response = client.text_detection(image=image)
+    df = pd.DataFrame(columns=['locale', 'description'])
+
+    texts = response.text_annotations
+    for text in texts:
+        df = df.append(
+            dict(
+                locale=text.locale,
+                description=text.description
+            ),
+            ignore_index=True
+        )
+
+    extractedString = df['description'][0]
+    country = iso_639.get(translator.detect(extractedString).lang)
+    print(extractedString)
+    return country
+    
+iso_639 = {'ab': 'Abkhaz',
+    'aa': 'Afar',
+    'af': 'Afrikaans',
+    'ak': 'Akan',
+    'sq': 'Albanian',
+    'am': 'Amharic',
+    'ar': 'Arabic',
+    'an': 'Aragonese',
+    'hy': 'Armenian',
+    'as': 'Assamese',
+    'av': 'Avaric',
+    'ae': 'Avestan',
+    'ay': 'Aymara',
+    'az': 'Azerbaijani',
+    'bm': 'Bambara',
+    'ba': 'Bashkir',
+    'eu': 'Basque',
+    'be': 'Belarusian',
+    'bn': 'Bengali',
+    'bh': 'Bihari',
+    'bi': 'Bislama',
+    'bs': 'Bosnian',
+    'br': 'Breton',
+    'bg': 'Bulgarian',
+    'my': 'Burmese',
+    'ca': 'Catalan; Valencian',
+    'ch': 'Chamorro',
+    'ce': 'Chechen',
+    'ny': 'Chichewa; Chewa; Nyanja',
+    'zh': 'Chinese',
+    'cv': 'Chuvash',
+    'kw': 'Cornish',
+    'co': 'Corsican',
+    'cr': 'Cree',
+    'hr': 'Croatian',
+    'cs': 'Czech',
+    'da': 'Danish',
+    'dv': 'Divehi; Maldivian;',
+    'nl': 'Dutch',
+    'dz': 'Dzongkha',
+    'en': 'English',
+    'eo': 'Esperanto',
+    'et': 'Estonian',
+    'ee': 'Ewe',
+    'fo': 'Faroese',
+    'fj': 'Fijian',
+    'fi': 'Finnish',
+    'fr': 'French',
+    'ff': 'Fula',
+    'gl': 'Galician (Italian)',
+    'ka': 'Georgian',
+    'de': 'German',
+    'el': 'Greek: Modern',
+    'gn': 'Guaraní',
+    'gu': 'Gujarati',
+    'ht': 'Haitian',
+    'ha': 'Hausa',
+    'he': 'Hebrew modern',
+    'hz': 'Herero',
+    'hi': 'Hindi',
+    'ho': 'Hiri Motu',
+    'hu': 'Hungarian',
+    'ia': 'Interlingua',
+    'id': 'Indonesian',
+    'ie': 'Interlingue',
+    'ga': 'Irish',
+    'ig': 'Igbo',
+    'ik': 'Inupiaq',
+    'io': 'Ido',
+    'is': 'Icelandic',
+    'it': 'Italian',
+    'iu': 'Inuktitut',
+    'ja': 'Japanese',
+    'jv': 'Javanese',
+    'kl': 'Kalaallisut',
+    'kn': 'Kannada',
+    'kr': 'Kanuri',
+    'ks': 'Kashmiri',
+    'kk': 'Kazakh',
+    'km': 'Khmer',
+    'ki': 'Kikuyu: Gikuyu',
+    'rw': 'Kinyarwanda',
+    'ky': 'Kirghiz: Kyrgyz',
+    'kv': 'Komi',
+    'kg': 'Kongo',
+    'ko': 'Korean',
+    'ku': 'Kurdish',
+    'kj': 'Kwanyama: Kuanyama',
+    'la': 'Latin',
+    'lb': 'Luxembourgish',
+    'lg': 'Luganda',
+    'li': 'Limburgish',
+    'ln': 'Lingala',
+    'lo': 'Lao',
+    'lt': 'Lithuanian',
+    'lu': 'Luba-Katanga',
+    'lv': 'Latvian',
+    'gv': 'Manx',
+    'mk': 'Macedonian',
+    'mg': 'Malagasy',
+    'ms': 'Malay',
+    'ml': 'Malayalam',
+    'mt': 'Maltese',
+    'mi': 'Māori',
+    'mr': 'Marathi Marāṭhī',
+    'mh': 'Marshallese',
+    'mn': 'Mongolian',
+    'na': 'Nauru',
+    'nv': 'Navajo: Navaho',
+    'nb': 'Norwegian Bokmål',
+    'nd': 'North Ndebele',
+    'ne': 'Nepali',
+    'ng': 'Ndonga',
+    'nn': 'Norwegian Nynorsk',
+    'no': 'Norwegian',
+    'ii': 'Nuosu',
+    'nr': 'South Ndebele',
+    'oc': 'Occitan',
+    'oj': 'Ojibwe: Ojibwa',
+    'cu': 'Old Church Slavonic',
+    'om': 'Oromo',
+    'or': 'Oriya',
+    'os': 'Ossetian: Ossetic',
+    'pa': 'Panjabi: Punjabi',
+    'pi': 'Pāli',
+    'fa': 'Persian',
+    'pl': 'Polish',
+    'ps': 'Pashto: Pushto',
+    'pt': 'Portuguese',
+    'qu': 'Quechua',
+    'rm': 'Romansh',
+    'rn': 'Kirundi',
+    'ro': 'Romanian: Moldavan',
+    'ru': 'Russian',
+    'sa': 'Sanskrit Saṁskṛta',
+    'sc': 'Sardinian',
+    'sd': 'Sindhi',
+    'se': 'Northern Sami',
+    'sm': 'Samoan',
+    'sg': 'Sango',
+    'sr': 'Serbian',
+    'gd': 'Scottish Gaelic',
+    'sn': 'Shona',
+    'si': 'Sinhala, Sinhalese',
+    'sk': 'Slovak',
+    'sl': 'Slovene',
+    'so': 'Somali',
+    'st': 'Southern Sotho',
+    'es': 'Spanish; Castilian',
+    'su': 'Sundanese/Indonesian',
+    'sw': 'Swahili',
+    'ss': 'Swati',
+    'sv': 'Swedish',
+    'ta': 'Tamil',
+    'te': 'Telugu',
+    'tg': 'Tajik',
+    'th': 'Thai',
+    'ti': 'Tigrinya',
+    'bo': 'Tibetan',
+    'tk': 'Turkmen',
+    'tl': 'Tagalog',
+    'tn': 'Tswana',
+    'to': 'Tonga',
+    'tr': 'Turkish',
+    'ts': 'Tsonga',
+    'tt': 'Tatar',
+    'tw': 'Twi',
+    'ty': 'Tahitian',
+    'ug': 'Uighur: Uyghur',
+    'uk': 'Ukrainian',
+    'ur': 'Urdu',
+    'uz': 'Uzbek',
+    've': 'Venda',
+    'vi': 'Vietnamese',
+    'vo': 'Volapük',
+    'wa': 'Walloon',
+    'cy': 'Welsh',
+    'wo': 'Wolof',
+    'fy': 'Western Frisian',
+    'xh': 'Xhosa',
+    'yi': 'Yiddish',
+    'yo': 'Yoruba',
+    'za': 'Zhuang: Chuang',
+    'zu': 'Zulu'}
+
+def getLanguageCode(langCode):
+    country = "None"
+    country = iso_639.get(langCode)
+    return country

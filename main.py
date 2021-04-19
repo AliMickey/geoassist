@@ -7,13 +7,12 @@ from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.window import Window
 from PIL import ImageGrab, Image
 from shutil import copyfile
-import sys
-import os
+import sys, os
 from languageDetection import langDetection
 from objectDetection import objectDetection
 
 #Window.clearcolor = (0.5, 0.5, 0.5, 1) #Window color
-Window.size = (1024, 470)
+Window.size = (1024, 500)
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -26,17 +25,12 @@ kv = Builder.load_file(resource_path("resources/GeoAssist.kv"))
 class LanguageWindow(Screen):
     outputString = StringProperty('')
     filePath = StringProperty('')
-    slavic = ObjectProperty(False)
-    nordicBaltic = ObjectProperty(False)
-    sea = ObjectProperty(False)
     imageActive = False
-    totalDegree = 0
 
     def __init__(self, **kwargs):
         super(LanguageWindow, self).__init__(**kwargs)
         Window.bind(on_dropfile=self._on_file_drop)
         Window.bind(on_key_down=self._on_keyboard_down)
-        Window.bind(on_motion=self._on_mouse_input)
 
     def _on_keyboard_down(self, window, keycode, num, text, modifiers):
         # Paste
@@ -46,17 +40,6 @@ class LanguageWindow(Screen):
             self.imageActive = True
             self.updateImagePreview()            
 
-    def _on_mouse_input(self, hit, type, motionevent):
-        degree = 0
-        if (self.imageActive == True and self.manager.current == "language"):
-            if (self.totalDegree < 10 and motionevent.button == "scrolldown"):
-                degree = 2
-            elif (self.totalDegree > -10 and motionevent.button == "scrollup"):
-                degree = -2
-            Image.open(resource_path("resources/image.png")).rotate(degree).save(resource_path("resources/image.png"))
-            self.totalDegree += degree
-            self.updateImagePreview()
-    
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "language"):
             self.filePath = file_path.decode("utf-8")
@@ -69,7 +52,7 @@ class LanguageWindow(Screen):
         self.ids.imgLang.reload()
 
     def languageDetect(self):
-        self.outputString = langDetection(self.slavic.active, self.nordicBaltic.active, self.sea.active)
+        self.outputString = langDetection()
         
     pass
 
@@ -143,4 +126,4 @@ if __name__ == '__main__':
     GeoAssist().run()
 
 #.exe Maker
-#pyinstaller --noconfirm --onefile --console --icon "D:/Programming/Git/geoguessr-ml/resources/icon.ico" --name "GeoAssist" --add-data "D:/Programming/Git/geoguessr-ml/resources;resources/" --add-data "D:/Programming/Git/geoguessr-ml/libpng16-16.dll;." --add-data "D:/Programming/Git/geoguessr-ml/languageDetection.py;." --add-data "D:/Programming/Git/geoguessr-ml/objectDetection.py;."  "D:/Programming/Git/geoguessr-ml/main.py"
+#pyinstaller --noconfirm --onefile --windowed --icon "D:/Programming/Git/geoguessr-ml/resources/icon.ico" --name "GeoAssist" --add-data "D:/Programming/Git/geoguessr-ml/languageDetection.py;." --add-data "D:/Programming/Git/geoguessr-ml/objectDetection.py;." --add-data "D:/Programming/Git/geoguessr-ml/resources;resources/" --add-data "D:/Programming/Git/geoguessr-ml/libpng16-16.dll;." --add-data "D:/Programming/Git/geoguessr-ml/roots.pem;grpc/_cython/_credentials/"  "D:/Programming/Git/geoguessr-ml/main.py"
