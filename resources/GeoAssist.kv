@@ -29,15 +29,14 @@
                 text: 'Submit'
                 on_release: 
                     threading.Thread(target=root.languageDetect).start()
-                    outputLabel = ""
-                size_hint: (.2, .2)
+                size_hint: (.2, .15)
                 pos_hint: {'right': .6}
 
         Label:
             id: outputLabel
             size: self.texture_size
             text: root.outputString
-            size_hint: (2, .1)
+            size_hint: (2, .25)
             pos_hint: {'left': 1}
                 
         
@@ -88,7 +87,8 @@
 
             Label:
                 size: self.texture_size
-                text: root.outputString
+                text: "Not Implemented"
+                #text: root.outputString
 
 
 <AboutWindow>:

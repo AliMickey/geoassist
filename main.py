@@ -36,9 +36,10 @@ class LanguageWindow(Screen):
         # Paste
         if (self.manager.current == "language" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
-            self.im.save(resource_path("resources/image.png"))
-            self.imageActive = True
-            self.updateImagePreview()            
+            if (self.im is not None):
+                self.im.save(resource_path("resources/image.png"))
+                self.imageActive = True
+                self.updateImagePreview()            
 
     def _on_file_drop(self, window, file_path):
         if (self.manager.current == "language"):
@@ -52,6 +53,7 @@ class LanguageWindow(Screen):
         self.ids.imgLang.reload()
 
     def languageDetect(self):
+        self.outputString = ""
         self.outputString = langDetection()
         
     pass
@@ -73,9 +75,10 @@ class ObjectWindow(Screen):
         # Paste
         if (self.manager.current == "object" and "ctrl" in modifiers and keycode == 118):
             self.im = ImageGrab.grabclipboard()
-            self.im.save(resource_path("resources/image.png"))
-            self.imageActive = True 
-            self.updateImagePreview()
+            if (self.im is not None):
+                self.im.save(resource_path("resources/image.png"))
+                self.imageActive = True 
+                self.updateImagePreview()
 
     def _on_mouse_input(self, hit, type, motionevent):
         degree = 0
