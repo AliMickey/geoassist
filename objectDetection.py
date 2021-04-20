@@ -16,11 +16,10 @@ def objectDetection(landmark):
             content = image_file.read()
 
         image = vision.Image(content=content)
-
         response = client.landmark_detection(image=image)
         landmarks = response.landmark_annotations
-        print('Landmarks:')
 
         for landmark in landmarks:
             landmarksString += landmark.description + ", "
-    return landmarksString
+        print(landmarksString)
+        return landmarksString
