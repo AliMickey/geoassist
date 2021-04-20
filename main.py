@@ -62,7 +62,7 @@ class LanguageWindow(Screen):
 class ObjectWindow(Screen):
     outputString = StringProperty('')
     filePath = StringProperty('')
-    bollard = ObjectProperty(False)
+    landmark = ObjectProperty(False)
     imageActive = False
 
     def __init__(self, **kwargs):
@@ -102,7 +102,7 @@ class ObjectWindow(Screen):
         self.ids.imgObj.reload()
 
     def objectDetect(self):
-        self.outputString = objectDetection(self.bollard.active)
+        self.outputString = objectDetection(self.landmark.active)
 
     pass
 

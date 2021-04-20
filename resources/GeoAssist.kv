@@ -41,7 +41,7 @@
                 
         
 <ObjectWindow>:
-    bollard: chkBollard
+    landmark: chkLandmark
     GridLayout:
         cols: 1
 
@@ -61,34 +61,32 @@
             Button:
                 text: 'About'
                 on_release: root.manager.current = 'about'
-
         BoxLayout:
+            orientation: 'vertical'
             Image:
                 id: imgObj
+                size_hint: (1, .6)
 
-        GridLayout:
-            cols: 2
-            row_default_height:120
-            row_force_default:True
-
-            GridLayout:
-                rows: 2
-                cols: 2
-
+            BoxLayout:
+                size_hint: (.2, .2)
+                pos_hint: {'right': .6}
                 Label:
-                    text: "Bollard"
+                    text: "Landmark"
                 CheckBox:
-                    id: chkBollard
-     
-                Button:
-                    text: 'Submit'
-                    on_release: 
-                        threading.Thread(target=root.objectDetect).start()
+                    id: chkLandmark
+        
+            Button:
+                text: 'Submit'
+                on_release: 
+                    threading.Thread(target=root.objectDetect).start()
+                size_hint: (.2, .15)
+                pos_hint: {'right': .6}
 
-            Label:
-                size: self.texture_size
-                text: "Not Implemented"
-                #text: root.outputString
+        Label:
+            size: self.texture_size
+            text: root.outputString
+            size_hint: (2, .25)
+            pos_hint: {'left': 1}
 
 
 <AboutWindow>:
