@@ -1,7 +1,7 @@
 # geoassist
 
 ## Language Detection:
-- Region checks
+- Supports all languages, no need to straighten or colour grade. Make sure you screenshot the text only.
 
 ## Object Detection:
-- Bollard detection -> lookup against possible countries
+- Only supports landmark detection.
