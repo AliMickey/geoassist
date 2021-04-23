@@ -1,4 +1,8 @@
 output
+roots.pem
+resources/image.png
+resources/img2.png
+resources/ServiceAccountToken.json
 
 resources/ServiceAccountToken.json
 # Byte-compiled / optimized / DLL files
